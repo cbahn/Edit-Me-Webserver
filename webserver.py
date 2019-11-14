@@ -10,12 +10,16 @@ import logging
 ##################
 
 # The port is the part put after the colon in the URL. Example  localhost:8080/pictures
-# The browser will default to 80 if you don't put one in the URL
+# The browser will default to 80 otherwise
 port=8080
 
 #####################
 ###  DEFINITIONS  ###
 #####################
+
+def page_builder():
+    return "Page Built"
+
 
 class Request_handler(BaseHTTPRequestHandler):
     def set_200_response_headers(self):
@@ -24,9 +28,10 @@ class Request_handler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
-        logging.info("GET request,\nPath: %s\nHeaders:\n%s\n", str(self.path), str(self.headers))
+        logging.info("GET request,\nPath: %s\n", str(self.path))
         self.set_200_response_headers()
-        self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
+        self.wfile.write(page_builder().encode('utf-8'))
+        #self.wfile.write("GET request for {}".format(self.path).encode('utf-8'))
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
