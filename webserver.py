@@ -18,10 +18,21 @@ port=8080
 ###  DEFINITIONS  ###
 #####################
 
+def create_table():
+    data = [
+        {'name':'Judy', 'id':385927},
+        {'name':'Brian', 'id':239429},
+        {'name':'Kendric', 'id':111903}]
+    result = ""
+    for i in data:
+        result += '<tr><td>{name}</td><td>{id}</td></tr>'.format( name=i['name'], id=i['id'] )
+    return result
+
+
 def page_builder():
     filein = open( 'index.html' )
     templ = Template( filein.read() )
-    result = templ.substitute( {'name':'Bobby Hill'} )
+    result = templ.substitute( {'name':'Bobby Hill','table':create_table()} )
     return result
 
 
