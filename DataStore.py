@@ -5,6 +5,12 @@ import os.path
 from os import path
 
 class DataStore:
+    """
+    DataStore is a utiliy for storing and retrieving lists of dictionaries from flat file storage.
+    This is meant to emulate a relational database and it is highly suggested, but not enforced, that the 
+    dictionaries' keys be the same for each entry. Scalability was not a major consideration and DataStore
+    is not reccomended for more than 1000 rows.
+    """
     def __init__(self, filename):
         if not filename.endswith('.json'):
             raise NameError("Invalid file name chosen. DataStore filename must end in '.json' .")
@@ -35,15 +41,3 @@ class DataStore:
             if i[key] != value:
                 newdata.append(i)
         self.data = newdata
-
-if __name__ == '__main__':
-    d = DataStore('datafiles/example.json')
-    
-    d.add({"name":"john","id":324})
-    d.add({"name":"john","id":882})
-    d.add({"name":"fred","id":111})
-    d.removeAll('id',111)
-
-    print(d.data)
-    d.save()
-    
