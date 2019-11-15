@@ -11,7 +11,8 @@
 2. Run the installer. All the default settings are fine and these settings can always be modified in the future.
 
 3. Download the Edit-Me-Webserver code from github. Clone or Download > Download Zip. Unzip the file to wherever you'd like.
-![Download it](https://i.imgur.com/zPtTDyw.png)
+
+![Download it](https://i.imgur.com/zPtTDyw.png "This image should be smaller :-/")
 
 4. Run the webserver. Locate the `webserver.py` file and click on it to open it with Python. A black box should open up indicating that the webserver is running.
 
