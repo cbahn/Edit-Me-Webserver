@@ -8,6 +8,8 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from string import Template
 from urllib.parse import parse_qs
 import logging
+import random
+import html
 
 # Import the DataStore.py functions
 from DataStore import DataStore
@@ -26,27 +28,39 @@ port=8080
 #  - logging.CRITICAL  no logs except if the program crashes
 logging_level = logging.INFO
 
+# Location of the guestlist storage file
+guestlist_file_location = 'datafiles/guestlist.json'
+
+message_of_the_day = "This message of the day is brought to you by templating."
 
 #####################
 ###  DEFINITIONS  ###
 #####################
 
-def create_table():
-    data = [
-        {'name':'Judy', 'id':385927},
-        {'name':'Brian', 'id':239429},
-        {'name':'Kendric', 'id':111903}]
-    result = ""
-    for i in data:
-        result += '<tr><td>{name}</td><td>{id}</td></tr>'.format( name=i['name'], id=i['id'] )
-    return result
+class NameBook:
+    # The guestlist stores the list of all names and is automatically backed up to the guestlist_file_location file
+    guestlist = DataStore( guestlist_file_location )
+    
+    def add_guest(self, new_name):
+        # IDs are assigned randomly. They don't really surve any purpose except adding a second value to each name
+        new_id = random.randrange(1000000)
+        self.guestlist.add( {'name': new_name, 'id': new_id } )
+        self.guestlist.save() # save after each guest is added
+        
+
+    def generate_table(self):
+        result = "" 
+        for i in self.guestlist.data:
+            name_to_show = html.escape( str( i['name'] ) )
+            id_to_show = html.escape( str(i['id']) )
+            result += "<tr><td>{name}</td><td class='number'>{id}</td></tr>".format( name=name_to_show, id=id_to_show )
+        return result
 
 
 def page_builder():
-    motd_data = DataStore('datafiles/motd.json')
     filein = open( 'index.html' )
     templ = Template( filein.read() )
-    result = templ.substitute( {'motd': motd_data.data['motd'],'table':create_table()} )
+    result = templ.substitute( {'motd': message_of_the_day, 'table':NameBook().generate_table()} )
     return result
 
 
@@ -92,10 +106,18 @@ class Request_handler(BaseHTTPRequestHandler):
         
         logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
                 str(self.path), str(self.headers), post_fields)
-
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
+    
+        # Add the new name to the guestlist
+        # The [0] at the end is nessesary because the parse_qs creates a list of responses in case there are identical 'name' fields
+        NameBook().add_guest( post_fields['name'][0] )
+        
+        # Once the post request has been processed, use a 303 redirect to send the
+        # browser back to '/'
+        self.send_response(303)
+        # self.send_header('Content-type', 'text/html') # I don't think I need this for a 303 redirect
+        self.send_header('Location', '/')
+        self.end_headers()
+        
         
 ##############
 ###  MAIN  ###

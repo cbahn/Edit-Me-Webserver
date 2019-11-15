@@ -12,10 +12,16 @@
 
 3. Download the Edit-Me-Webserver code from github. Clone or Download > Download Zip. Unzip the file to wherever you'd like.
 
-![Download it](https://i.imgur.com/zPtTDyw.png "This image should be smaller :-/")
+## Running and Editing
 
-4. Run the webserver. Locate the `webserver.py` file and click on it to open it with Python. A black box should open up indicating that the webserver is running.
+**Run the webserver:** Locate the `webserver.py` file and click on it to open it with Python. A black box should open up indicating that the webserver is running.
 
-5. Look at the website. By default, the server's address is `http://localhost:8080`. Just type this into a web browser and have a look at the site.
+**Look at the website:** By default, the server's address is `http://localhost:8080`. Just type this into a web browser and have a look at the site.
 
-6. Start Editing! Open any of the files in a text editor to look at the code and start editing. I reccomend an editor such as [Notepad++](https://notepad-plus-plus.org/downloads) which is well suited to simple code editing.
+**Stop the webserver:** Right now the only way to stop the server is by closing the window it's running in. Find the black python text window and close it.
+
+*Start Editing!* Open any of the files in a text editor to look at the code and start editing. I reccomend an editor such as [Notepad++](https://notepad-plus-plus.org/downloads) which is well suited to simple code editing.
+
+## File Map
+
+_coming soon_

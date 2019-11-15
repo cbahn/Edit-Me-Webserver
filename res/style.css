@@ -57,3 +57,9 @@ span.time {
 	width: 4.2em;
 	display: inline-block;
 }
+
+
+td.number {
+	font-family: consolas,"Liberation Mono",courier,monospace;
+	text-align: right;
+}
