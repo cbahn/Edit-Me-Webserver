@@ -32,10 +32,11 @@ class DataStore:
             return json.loads( f.read() )
     
     def add(self, element):
+        # This method will fail if the data is not appendable
         self.data.append(element)
     
     def removeAll(self, key, value):
-    # The way this is written is not very fast. User beware 🐢.
+    # This is not a very fast way of preforming this operation. User beware 🐢.
         newdata = []
         for i in self.data:
             if i[key] != value:

@@ -9,6 +9,9 @@ from string import Template
 from urllib.parse import parse_qs
 import logging
 
+# Import the DataStore.py functions
+from DataStore import DataStore
+
 ##################
 ###  SETTINGS  ###
 ##################
@@ -40,9 +43,10 @@ def create_table():
 
 
 def page_builder():
+    motd_data = DataStore('datafiles/motd.json')
     filein = open( 'index.html' )
     templ = Template( filein.read() )
-    result = templ.substitute( {'name':'Bobby Hill','table':create_table()} )
+    result = templ.substitute( {'motd': motd_data.data['motd'],'table':create_table()} )
     return result
 
 
