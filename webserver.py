@@ -47,14 +47,13 @@ def page_builder():
 
 
 class Request_handler(BaseHTTPRequestHandler):
-    def _set_200_response(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
     
-    def _set_400_response(self):
-        self.send_response(400)
-        self.end_headers()
+    def _send_file(self,file_location,content_type):
+            with open(file_location, 'rb') as file:            # Using 'with' ensures that the file is closed once we're done
+                self.send_response(200)                        # Response type: Success 👍
+                self.send_header('Content-type', content_type) # Set an appropriate Content-type
+                self.end_headers()                             # This line is important for separing the headers from the response
+                self.wfile.write(file.read())                  # Write the file data directly to the response
 
     def do_GET(self):
         logging.info("GET request,\nPath: %s\n", str(self.path))
@@ -63,12 +62,17 @@ class Request_handler(BaseHTTPRequestHandler):
         # Also, the post request should start redirecting correctly
         
         if self.path == '/':
-            self._set_200_response()
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
             self.wfile.write(page_builder().encode('utf-8'))
         elif self.path == '/res/style.css':
-            pass
+            self._send_file('res/style.css','text/css')
+        elif self.path == '/res/favicon.ico':
+            self._send_file('res/favicon.ico','image/x-icon')
         else:
-            self._set_400_response()
+            self.send_response(400)
+            self.end_headers()
 
 # wikipedia.org/wiki/Post/Redirect/Get
 
@@ -81,7 +85,8 @@ class Request_handler(BaseHTTPRequestHandler):
         logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
                 str(self.path), str(self.headers), post_fields)
 
-        self._set_200_response()
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
         
 ##############
