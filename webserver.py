@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 # This is an include statement. It tells python that it should load up
-# the functions for HTTPServer and logging because we're going to use them
+# the functions for HTTPServer, Template, and logging because we're going to use them
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from string import Template
 import logging
 
 ##################
@@ -18,7 +19,10 @@ port=8080
 #####################
 
 def page_builder():
-    return "Page Built"
+    filein = open( 'index.html' )
+    templ = Template( filein.read() )
+    result = templ.substitute( {'name':'Bobby Hill'} )
+    return result
 
 
 class Request_handler(BaseHTTPRequestHandler):
