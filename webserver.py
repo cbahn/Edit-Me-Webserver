@@ -6,6 +6,7 @@
 # the functions for HTTPServer, Template, and logging because we're going to use them
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from string import Template
+from urllib.parse import parse_qs
 import logging
 
 ##################
@@ -73,9 +74,12 @@ class Request_handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length)
+        post_data = self.rfile.read(content_length).decode('utf-8')
+        # Thanks to https://stackoverflow.com/a/31363982 for info on how to parse POST form data
+        post_fields = parse_qs(post_data, strict_parsing=True)
+        
         logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
-                str(self.path), str(self.headers), post_data.decode('utf-8'))
+                str(self.path), str(self.headers), post_fields)
 
         self._set_200_response()
         self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
