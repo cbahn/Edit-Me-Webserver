@@ -48,7 +48,7 @@ def page_builder():
 
 class Request_handler(BaseHTTPRequestHandler):
     
-    def _send_file(self,file_location,content_type):
+    def __send_file(self,file_location,content_type):
             with open(file_location, 'rb') as file:            # Using 'with' ensures that the file is closed once we're done
                 self.send_response(200)                        # Response type: Success 👍
                 self.send_header('Content-type', content_type) # Set an appropriate Content-type
@@ -56,22 +56,26 @@ class Request_handler(BaseHTTPRequestHandler):
                 self.wfile.write(file.read())                  # Write the file data directly to the response
 
     def do_GET(self):
-        logging.info("GET request,\nPath: %s\n", str(self.path))
-        
-        ## NEXT STEPS: add stuff to load the res properly
-        # Also, the post request should start redirecting correctly
-        
+        """ When a GET request is received, we want to examine the url to determine what to do with it.
+        The self.path variable stores the request path. For instance, if the browser navigates to 
+        http://localhost:8080/images then the path will be '/images'.
+        """
+        # If the request is for the main page then we generate the page using the page_builder function
         if self.path == '/':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
             self.wfile.write(page_builder().encode('utf-8'))
+        
+        # If the response is asking for the style.css file or the favicon.ico file then respond with the file
         elif self.path == '/res/style.css':
-            self._send_file('res/style.css','text/css')
+            self.__send_file('res/style.css','text/css')
+            
         elif self.path == '/res/favicon.ico':
-            self._send_file('res/favicon.ico','image/x-icon')
-        else:
-            self.send_response(400)
+            self.__send_file('res/favicon.ico','image/x-icon')
+            
+        else: # If the response isn't recognized, send a 404 file not found error
+            self.send_response(404)
             self.end_headers()
 
 # wikipedia.org/wiki/Post/Redirect/Get
