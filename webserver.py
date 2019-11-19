@@ -97,9 +97,11 @@ class Request_handler(BaseHTTPRequestHandler):
 
 
     def do_POST(self):
-        """ If a POST request is received, then we have new data we want to add to the list."""
+        """ If a POST request is received, then we have new data we want to add to the list.
+        More info on GET vs POST https://www.w3schools.com/tags/ref_httpmethods.asp """
         
-        if self.path == '/guestlist': # The only valid path to POST to is /guestlist
+        # The only valid path is /guestlist. Reject everything else with a 404 error
+        if self.path == '/guestlist':
         
             # Parse the post form data and put it in post_fields
             content_length = int(self.headers['Content-Length'])
