@@ -46,3 +46,4 @@ There are a multitude of features and practices missing from this project. When 
 
 **Database** — The DataStore utility is easy to use and run, but it's flimsy. If the server crashes while writing data it could lose it all. And it's pretty slow. This issue of persistantly storing data has been solved though with Database software, which is easy to integrate into a Python application. I reccomend getting started with [MySQL](https://www.mysql.com), which is free and easy to install on Windows.
 
+**Templating Engine** — Right now we're using string.Template to insert data into the page. It is easy, but doesn't have many features. If you want to start putting a lot of data into the webpage each load, you should consider a templating engine like [Jinja](https://jinja.palletsprojects.com/en/2.10.x).
