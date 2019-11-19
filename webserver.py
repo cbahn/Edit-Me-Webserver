@@ -2,8 +2,7 @@
 
 # Based Largely off of https://gist.github.com/mdonkers/63e115cc0c79b4f6b8b3a6b797e485c7
 
-# This is an include statement. It tells python that it should load up
-# the functions for HTTPServer, Template, and logging because we're going to use them
+# Import Python modules we're going to use
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from string import Template
 from urllib.parse import parse_qs
@@ -37,6 +36,12 @@ message_of_the_day = "This message of the day is brought to you by templating."
 ###  DEFINITIONS  ###
 #####################
 
+def homepage_builder():
+    filein = open( 'index.html' )
+    templ = Template( filein.read() )
+    result = templ.substitute( {'motd': message_of_the_day, 'table':NameBook().generate_table()} )
+    return result
+
 class NameBook:
     # The guestlist stores the list of all names and is automatically backed up to the guestlist_file_location file
     guestlist = DataStore( guestlist_file_location )
@@ -57,13 +62,6 @@ class NameBook:
         return result
 
 
-def page_builder():
-    filein = open( 'index.html' )
-    templ = Template( filein.read() )
-    result = templ.substitute( {'motd': message_of_the_day, 'table':NameBook().generate_table()} )
-    return result
-
-
 class Request_handler(BaseHTTPRequestHandler):
     
     def __send_file(self,file_location,content_type):
@@ -78,12 +76,13 @@ class Request_handler(BaseHTTPRequestHandler):
         The self.path variable stores the request path. For instance, if the browser navigates to 
         http://localhost:8080/images then the path will be '/images'.
         """
-        # If the request is for the main page then we generate the page using the page_builder function
+        
+        # If the request is for the main page then we generate the page using the homepage_builder function
         if self.path == '/':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            self.wfile.write(page_builder().encode('utf-8'))
+            self.wfile.write(homepage_builder().encode('utf-8'))
         
         # If the response is asking for the style.css file or the favicon.ico file then respond with the file
         elif self.path == '/res/style.css':
@@ -96,27 +95,33 @@ class Request_handler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-# wikipedia.org/wiki/Post/Redirect/Get
 
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length).decode('utf-8')
-        # Thanks to https://stackoverflow.com/a/31363982 for info on how to parse POST form data
-        post_fields = parse_qs(post_data, strict_parsing=True)
+        """ If a POST request is received, then we have new data we want to add to the list."""
         
-        logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
-                str(self.path), str(self.headers), post_fields)
-    
-        # Add the new name to the guestlist
-        # The [0] at the end is nessesary because the parse_qs creates a list of responses in case there are identical 'name' fields
-        NameBook().add_guest( post_fields['name'][0] )
+        if self.path == '/guestlist': # The only valid path to POST to is /guestlist
         
-        # Once the post request has been processed, use a 303 redirect to send the
-        # browser back to '/'
-        self.send_response(303)
-        # self.send_header('Content-type', 'text/html') # I don't think I need this for a 303 redirect
-        self.send_header('Location', '/')
-        self.end_headers()
+            # Parse the post form data and put it in post_fields
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length).decode('utf-8')
+            # Thanks to https://stackoverflow.com/a/31363982 for info on how to parse POST form data
+            post_fields = parse_qs(post_data, strict_parsing=True)
+            
+            logging.info("POST request, Path: %s, Body:\n%s\n",str(self.path), str(post_fields))
+        
+            # Add the new name to the guestlist
+            # The [0] at the end is nessesary because the parse_qs creates a list of responses in case there are identical 'name' fields
+            NameBook().add_guest( post_fields['name'][0] )
+            
+            # Once the post request has been processed, use a 303 redirect to send the browser back to '/'
+            # wikipedia.org/wiki/Post/Redirect/Get
+            self.send_response(303)
+            # self.send_header('Content-type', 'text/html') # I don't think I need this for a 303 redirect
+            self.send_header('Location', '/')
+            self.end_headers()
+        else:
+            self.send_response(404)
+            self.end_headers()
         
         
 ##############
