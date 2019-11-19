@@ -24,4 +24,25 @@
 
 ## File Map
 
-_coming soon_
+    .
+    ├── datafiles            # Directory for all files created by DataStore.py
+    │   └── names.json       # The guestlist storage file
+    ├── res                  # resources used by the webpage
+    │   ├── favicon.ico      # A tiny image this displays in the webpage tab in the browser
+  	│   └── style.css        # Stylist information such as font and text colors
+    ├── DataStore.py         # A helper module I wrote to store files with
+    ├── README.md            # This document you're reading right now
+    ├── index.html           # The webpage itself, ready to have information templated into it
+    └── webserver.py         # The main webserver code
+
+
+## Going Forward
+
+There are a multitude of features and practices missing from this project. When you're ready, consider broadening your understanding from the list below:
+
+**Git and Version Control** — If you find yourself having trouble undoing bad changes or saving multiple copies of files as backups, consider using a version control system like [Git](https://gitforwindows.org).
+
+**Input Validation** — If a website allows users to enter their own info into a website, there's a lot of risk of unexpected inputs causing big problems. I would reccomend putting in strong checks that every input looks like what is expected. For instance, is a user's name allowed to contain emoji? Or be 10,000 characters long? Or contain `<i>HTML</i>`?
+
+**Database** — The DataStore utility is easy to use and run, but it's flimsy. If the server crashes while writing data it could lose it all. And it's pretty slow. This issue of persistantly storing data has been solved though with Database software, which is easy to integrate into a Python application. I reccomend getting started with [MySQL](https://www.mysql.com), which is free and easy to install on Windows.
+
