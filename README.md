@@ -2,7 +2,7 @@
 
 [![Python 3.8](https://img.shields.io/badge/python-3.8-brightgreen.svg)](https://www.python.org/downloads/release/python-380/)
 
-**Edit-Me-Webserver** is a local webserver skeleton which handles GET and POST requests and uses a simple flat-file data store written in pure python. It is meant as an introduction to webserver development in python.
+**Edit-Me-Webserver** is a local webserver skeleton which handles GET and POST requests and uses a simple flat-file data store written in pure python. It is meant as a very basic introduction to webserver development in python.
 
 ## Getting Started
 
